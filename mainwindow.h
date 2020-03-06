@@ -16,6 +16,9 @@
 #include <QUrl>
 #include <QNetworkRequest>
 
+#include <QKeyEvent>
+#include "videowidget.h"
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -34,7 +37,7 @@ class MainWindow : public QMainWindow
     QLineEdit * login_edit;
     QLineEdit * password_edit;
 
-    QVideoWidget * videoWidget;
+    VideoWidget * videoWidget;
 
     QMediaPlayer * player0;
 
@@ -47,6 +50,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
 
     ~MainWindow();
+
+protected:
+    void keyPressEvent(QKeyEvent *);
 
 private slots:
     void slotConnectDisconnect ();

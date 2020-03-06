@@ -26,8 +26,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(button1, SIGNAL(clicked()), SLOT(slotConnectDisconnect()) );
 
-    videoWidget = new QVideoWidget;
+    videoWidget = new VideoWidget;
     videoWidget->setMinimumSize(704, 576);
+
 
     player0 = new QMediaPlayer;
     player0->setVideoOutput(videoWidget);
@@ -96,4 +97,21 @@ void MainWindow::slotConnectDisconnect()
         is_connected = false;
     }
 
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape)
+    {
+        if (videoWidget != nullptr) {
+            videoWidget->setFullScreen(false);
+        }
+
+    }
+    else if (event->key() == Qt::Key_F11) {
+
+        if (videoWidget != nullptr) {
+            videoWidget->setFullScreen(true);
+        }
+    }
 }
