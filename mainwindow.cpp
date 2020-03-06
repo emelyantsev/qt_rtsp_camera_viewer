@@ -3,7 +3,7 @@
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent) , m_settings("outSmart", "LiveWatcher")
 {
 
     ip_address_edit = new QLineEdit;
@@ -12,14 +12,15 @@ MainWindow::MainWindow(QWidget *parent)
     password_edit = new QLineEdit;
     password_edit->setEchoMode(QLineEdit::Password);
 
+
     label0 = new QLabel;
-    label0->setText("IP address");
+    label0->setText("IP address:");
 
     label1 = new QLabel;
-    label1->setText("Login");
+    label1->setText("Login:");
 
     label2 = new QLabel;
-    label2->setText("Password");
+    label2->setText("Password:");
 
     button1 = new QPushButton;
     button1->setText("Connect");
@@ -41,6 +42,10 @@ MainWindow::MainWindow(QWidget *parent)
     layout1->addWidget(login_edit);
     layout1->addWidget(label2);
     layout1->addWidget(password_edit);
+
+    spacer0 = new QSpacerItem(30, 40, QSizePolicy::Minimum, QSizePolicy::Maximum);
+    layout1->addSpacerItem(spacer0);
+
     layout1->addWidget(button1);
 
     layout2 = new QVBoxLayout;
@@ -50,16 +55,25 @@ MainWindow::MainWindow(QWidget *parent)
     layout0->addLayout(layout2);
     layout0->addLayout(layout1);
 
+    layout0->setAlignment(layout1, Qt::AlignTop) ;
 
     QWidget * window = new QWidget();
     window->setLayout(layout0);
     setCentralWidget(window);
 
+
+
+    QRegExpValidator *ipValidator = new QRegExpValidator(ipRegex, this);
+
+    ip_address_edit->setValidator(ipValidator);
+
+    readSettings();
+
 }
 
 MainWindow::~MainWindow()
 {
-
+    writeSettings();
 }
 
 void MainWindow::slotConnectDisconnect()
@@ -68,14 +82,20 @@ void MainWindow::slotConnectDisconnect()
     if (!is_connected) {
 
 
+
+
         QString login = login_edit->text() ;
         QString password = password_edit->text() ;
         QString ip_address = ip_address_edit->text() ;
 
-        url0 = QUrl("rtsp://" + ip_address + ":554/ISAPI/Streaming/Channels/102");
 
-        //qDebug() << url0.toString() ;
-        //exit(0);
+        if (!ipRegex1.match(ip_address).hasMatch() ) {
+
+            QMessageBox::critical(this, "Error", "Wrong format for IP address");
+            return;
+        }
+
+        url0 = QUrl("rtsp://" + ip_address + ":554/ISAPI/Streaming/Channels/102");
 
         url0.setUserName(login);
         url0.setPassword(password);
@@ -101,17 +121,31 @@ void MainWindow::slotConnectDisconnect()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Escape)
-    {
-        if (videoWidget != nullptr) {
-            videoWidget->setFullScreen(false);
-        }
-
-    }
-    else if (event->key() == Qt::Key_F11) {
+    if (event->key() == Qt::Key_F11) {
 
         if (videoWidget != nullptr) {
             videoWidget->setFullScreen(true);
         }
     }
+}
+
+
+void MainWindow::writeSettings() {
+
+    m_settings.beginGroup("/Settings");
+    m_settings.setValue("/ip_address", ip_address_edit->text() ) ;
+    m_settings.setValue("/login", login_edit->text() );
+    m_settings.setValue("/password", password_edit->text() );
+    m_settings.endGroup();
+
+}
+
+void MainWindow::readSettings() {
+
+    m_settings.beginGroup("/Settings");
+    ip_address_edit->setText(m_settings.value("/ip_address", "").toString() );
+    login_edit->setText(m_settings.value("/login", "admin").toString() );
+    password_edit->setText(m_settings.value("/password", "Freedom!00##").toString() );
+    m_settings.endGroup();
+
 }
