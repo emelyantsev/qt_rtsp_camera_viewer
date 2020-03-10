@@ -2,9 +2,7 @@
 
 #include <QDebug>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent) , m_settings("outSmart", "LiveWatcher")
-{
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_settings("outSmart", "LiveWatcher") {
 
     ip_address_edit = new QLineEdit;
     login_edit = new QLineEdit;
@@ -48,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     layout1->addWidget(button1);
 
+    layout1->setContentsMargins(10, 10, 10, 10);
+
     layout2 = new QVBoxLayout;
     layout2->addWidget(videoWidget);
 
@@ -69,6 +69,37 @@ MainWindow::MainWindow(QWidget *parent)
 
     readSettings();
 
+
+
+    QAction* pactShowHide = new QAction("&Show/Hide Application Window", this);
+
+    connect(pactShowHide, SIGNAL(triggered()),
+            this,         SLOT(slotShowHide())
+           );
+
+
+    QAction* pactQuit = new QAction("&Quit", this);
+    connect(pactQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
+
+    m_ptrayIconMenu = new QMenu(this);
+    m_ptrayIconMenu->addAction(pactShowHide);
+    m_ptrayIconMenu->addAction(pactQuit);
+
+    m_ptrayIcon = new QSystemTrayIcon(this);
+    m_ptrayIcon->setContextMenu(m_ptrayIconMenu);
+    m_ptrayIcon->setToolTip("LiveWatcher");
+    m_ptrayIcon->setIcon(QPixmap(":/images/logo.png"));
+
+    m_ptrayIcon->show();
+
+
+
+
+    createMenus();
+
+
+
+
 }
 
 MainWindow::~MainWindow()
@@ -80,8 +111,6 @@ void MainWindow::slotConnectDisconnect()
 {
 
     if (!is_connected) {
-
-
 
 
         QString login = login_edit->text() ;
@@ -115,6 +144,8 @@ void MainWindow::slotConnectDisconnect()
         player0->stop();
         button1->setText("Connect");
         is_connected = false;
+
+
     }
 
 }
@@ -126,6 +157,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         if (videoWidget != nullptr) {
             videoWidget->setFullScreen(true);
         }
+    }
+    else if (event->key() == Qt::Key_Escape) {
+
+        //hide();
+        qApp->quit();
     }
 }
 
@@ -148,4 +184,107 @@ void MainWindow::readSettings() {
     password_edit->setText(m_settings.value("/password", "Freedom!00##").toString() );
     m_settings.endGroup();
 
+}
+
+void MainWindow::slotShowHide()
+{
+    setVisible(!isVisible());
+}
+
+void MainWindow::closeEvent(QCloseEvent * event)
+{
+
+    setVisible(false);
+    event->ignore();
+}
+
+void MainWindow::showAbout() {
+
+    QMessageBox::about(nullptr, "About", "aleks.twin@gmail.com");
+
+}
+
+void MainWindow::createMenus()
+{
+
+    QAction *quit = new QAction("&Quit", this);
+    QMenu *file;
+
+    file = menuBar()->addMenu(tr("&File"));
+    file->addAction(quit);
+
+    connect(quit, &QAction::triggered, qApp, QApplication::quit);
+
+
+    QMenu *settingsMenu;
+    settingsMenu = menuBar()->addMenu(tr("&Settings"));
+
+    QAction * colorSettingsAct = new QAction(tr("&Color settings"), this);
+
+    colorSettingsAct->setStatusTip(tr("Show color settings"));
+    connect(colorSettingsAct, &QAction::triggered, this, &MainWindow::showColorDialog);
+
+    settingsMenu->addAction(colorSettingsAct);
+
+
+    QMenu *helpMenu;
+    helpMenu = menuBar()->addMenu(tr("&Help"));
+
+    QAction * aboutAct = new QAction(tr("&About"), this);
+
+    aboutAct->setStatusTip(tr("Create a new file"));
+    connect(aboutAct, &QAction::triggered, this, &MainWindow::showAbout);
+
+    helpMenu->addAction(aboutAct);
+
+}
+
+
+void MainWindow::showColorDialog() {
+
+    if (!m_colorDialog) {
+
+        QSlider *brightnessSlider = new QSlider(Qt::Horizontal);
+
+        brightnessSlider->setRange(-100, 100);
+        brightnessSlider->setValue(videoWidget->brightness());
+
+        connect(brightnessSlider, &QSlider::sliderMoved, videoWidget, &QVideoWidget::setBrightness);
+        connect(videoWidget, &QVideoWidget::brightnessChanged, brightnessSlider, &QSlider::setValue);
+
+        QSlider *contrastSlider = new QSlider(Qt::Horizontal);
+        contrastSlider->setRange(-100, 100);
+        contrastSlider->setValue(videoWidget->contrast());
+        connect(contrastSlider, &QSlider::sliderMoved, videoWidget, &QVideoWidget::setContrast);
+        connect(videoWidget, &QVideoWidget::contrastChanged, contrastSlider, &QSlider::setValue);
+
+        QSlider *hueSlider = new QSlider(Qt::Horizontal);
+        hueSlider->setRange(-100, 100);
+        hueSlider->setValue(videoWidget->hue());
+        connect(hueSlider, &QSlider::sliderMoved, videoWidget, &QVideoWidget::setHue);
+        connect(videoWidget, &QVideoWidget::hueChanged, hueSlider, &QSlider::setValue);
+
+        QSlider *saturationSlider = new QSlider(Qt::Horizontal);
+        saturationSlider->setRange(-100, 100);
+        saturationSlider->setValue(videoWidget->saturation());
+        connect(saturationSlider, &QSlider::sliderMoved, videoWidget, &QVideoWidget::setSaturation);
+        connect(videoWidget, &QVideoWidget::saturationChanged, saturationSlider, &QSlider::setValue);
+
+        QFormLayout *layout = new QFormLayout;
+        layout->addRow(tr("Brightness"), brightnessSlider);
+        layout->addRow(tr("Contrast"), contrastSlider);
+        layout->addRow(tr("Hue"), hueSlider);
+        layout->addRow(tr("Saturation"), saturationSlider);
+
+        QPushButton *button = new QPushButton(tr("Close"));
+        layout->addRow(button);
+
+        m_colorDialog = new QDialog(this, Qt::WindowSystemMenuHint | Qt::WindowTitleHint);
+        m_colorDialog->setWindowTitle(tr("Color Options"));
+        m_colorDialog->setLayout(layout);
+
+        connect(button, &QPushButton::clicked, m_colorDialog, &QDialog::close);
+    }
+
+    m_colorDialog->show();
 }

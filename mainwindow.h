@@ -26,6 +26,17 @@
 
 #include <QSettings>
 
+#include <QSystemTrayIcon>
+#include <QAction>
+#include <QMenu>
+#include <QMenuBar>
+
+#include <QDialog>
+#include <QSlider>
+#include <QFormLayout>
+
+#include <QApplication>
+
 #include "videowidget.h"
 
 class MainWindow : public QMainWindow
@@ -62,6 +73,11 @@ class MainWindow : public QMainWindow
 
     QSettings m_settings;
 
+    QSystemTrayIcon* m_ptrayIcon;
+    QMenu*           m_ptrayIconMenu;
+
+    QDialog *m_colorDialog = nullptr;
+
 public:
 
     MainWindow(QWidget *parent = nullptr);
@@ -70,11 +86,18 @@ public:
     void writeSettings();
     void readSettings();
 
+
 protected:
-    void keyPressEvent(QKeyEvent *);
+    virtual void keyPressEvent(QKeyEvent *);
+    virtual void closeEvent(QCloseEvent*);
 
 private slots:
     void slotConnectDisconnect ();
+    void slotShowHide ();
+    void createMenus();
+    void showAbout();
+    void showColorDialog();
+
 
 };
 
