@@ -1,1 +1,5 @@
-# qt_rtsp_camera_viewer
+## Overview
+
+This program 
+
+![LiveWatcher GUI](images/screenshot.png)

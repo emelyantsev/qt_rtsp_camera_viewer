@@ -160,11 +160,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_Escape) {
 
-        //hide();
+
         qApp->quit();
     }
 
-    videoWidget->setStyleSheet("border: 3px solid red");
 }
 
 
