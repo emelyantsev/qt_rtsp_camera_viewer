@@ -1,3 +1,5 @@
+![LiveWatcher logo](/images/icon-256.png.png)
+
 ## Overview
 
 The program is a simple rtsp-player for video surveillance cameras.
