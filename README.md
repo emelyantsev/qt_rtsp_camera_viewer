@@ -2,4 +2,4 @@
 
 This program 
 
-![LiveWatcher GUI](images/screenshot.png)
+![LiveWatcher GUI](/images/screenshot.png)
