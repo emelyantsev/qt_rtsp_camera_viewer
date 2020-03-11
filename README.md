@@ -18,19 +18,16 @@ It's written on plain C++, without QML and QDesigner. It has handy installer not
 To generate distrib files:
 ```
 windeployqt camera_viewer.exe --release
-
 ```
 
 To generate installer:
 ```
 ..\..\bin\binarycreator.exe -c config\config.xml -p packages LiveWatcher-1.0.0.Installer.exe
-
 ```
 
 To generate icon:
 ```
 magick.exe convert icon-16.png icon-32.png icon-256.png icon.ico
-
 ```
 
 ## Useful links
