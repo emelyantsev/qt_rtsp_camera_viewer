@@ -1,4 +1,4 @@
-![LiveWatcher logo](/images/icon-256.png.png)
+![LiveWatcher logo](/images/icon-256.png)
 
 ## Overview
 
