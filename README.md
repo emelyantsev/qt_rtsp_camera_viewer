@@ -15,6 +15,17 @@ It's written on plain C++, without QML and QDesigner. It has handy installer not
 
 ## Build instructions
 
+To generate distrib files:
+```
+windeployqt camera_viewer.exe --release
+
+```
+
+To generate installer:
+```
+..\..\bin\binarycreator.exe -c config\config.xml -p packages LiveWatcher-1.0.0.Installer.exe
+
+```
 
 ## Useful links
 - [Qt for Windows - Deployment](https://doc.qt.io/qt-5/windows-deployment.html)
