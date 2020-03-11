@@ -15,6 +15,10 @@ It's written on plain C++, without QML and QDesigner. It has handy installer not
 
 
 ## Useful links
+- [Qt for Windows - Deployment](https://doc.qt.io/qt-5/windows-deployment.html)
+- [Tutorial: Creating an Installer](https://doc.qt.io/qtinstallerframework/ifw-tutorial.html)
+- [Setting the Application Icon](https://doc.qt.io/qtinstallerframework/ifw-tutorial.html)
+- [QDarkStyleSheet](https://github.com/ColinDuquesnoy/QDarkStyleSheet)
 
 
 ## Known bugs
