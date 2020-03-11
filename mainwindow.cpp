@@ -25,12 +25,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_settings("outSm
 
     connect(button1, SIGNAL(clicked()), SLOT(slotConnectDisconnect()) );
 
-    videoWidget = new VideoWidget;
+    videoWidget = new VideoWidget(this);
     videoWidget->setMinimumSize(704, 576);
-
 
     player0 = new QMediaPlayer;
     player0->setVideoOutput(videoWidget);
+
 
 
     layout1 = new QVBoxLayout;
@@ -163,6 +163,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         //hide();
         qApp->quit();
     }
+
+    videoWidget->setStyleSheet("border: 3px solid red");
 }
 
 
@@ -200,7 +202,7 @@ void MainWindow::closeEvent(QCloseEvent * event)
 
 void MainWindow::showAbout() {
 
-    QMessageBox::about(nullptr, "About", "aleks.twin@gmail.com");
+    QMessageBox::about(this, "About", "aleks.twin@gmail.com");
 
 }
 
@@ -229,6 +231,16 @@ void MainWindow::createMenus()
 
     QMenu *helpMenu;
     helpMenu = menuBar()->addMenu(tr("&Help"));
+
+
+    QAction * hotKeysAct = new QAction(tr("&Hot keys"), this);
+
+
+    connect(hotKeysAct, &QAction::triggered, this, &MainWindow::showHotKeys);
+
+    helpMenu->addAction(hotKeysAct);
+
+    helpMenu->addSeparator();
 
     QAction * aboutAct = new QAction(tr("&About"), this);
 
@@ -287,4 +299,20 @@ void MainWindow::showColorDialog() {
     }
 
     m_colorDialog->show();
+}
+
+void MainWindow::showHotKeys() {
+
+    QLabel * q_label = new QLabel();
+
+    q_label->setStyleSheet(styleSheet() );
+
+    q_label->setText("F11 - full screeen\nEcsape - exit full screen\n");
+
+    q_label->setContentsMargins(10,10,10,10);
+
+    q_label->setWindowTitle("Hot keys");
+    q_label->setFixedSize(240, 60);
+
+    q_label->show();
 }

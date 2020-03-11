@@ -36,4 +36,3 @@ void VideoWidget::mousePressEvent(QMouseEvent *event)
 {
     QVideoWidget::mousePressEvent(event);
 }
-

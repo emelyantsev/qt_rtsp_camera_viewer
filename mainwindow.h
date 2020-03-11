@@ -97,6 +97,7 @@ private slots:
     void createMenus();
     void showAbout();
     void showColorDialog();
+    void showHotKeys();
 
 
 };
