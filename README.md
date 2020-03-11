@@ -27,6 +27,12 @@ To generate installer:
 
 ```
 
+To generate icon:
+```
+magick.exe convert icon-16.png icon-32.png icon-256.png icon.ico
+
+```
+
 ## Useful links
 - [Qt for Windows - Deployment](https://doc.qt.io/qt-5/windows-deployment.html)
 - [Tutorial: Creating an Installer](https://doc.qt.io/qtinstallerframework/ifw-tutorial.html)
